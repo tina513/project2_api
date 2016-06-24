@@ -57,6 +57,15 @@ class UsersController < ProtectedController
     head :bad_request
   end
 
+  def creatflight
+    flight = current_user.flights.create(flight_info)
+    if flight.valid?
+      render json: flight, status: :created
+    else
+      head :bad_request
+    end
+  end
+
   private
 
   def user_creds
@@ -69,5 +78,11 @@ class UsersController < ProtectedController
           .permit(:old, :new)
   end
 
-  private :user_creds, :pw_creds
+  def flight_info
+    params.require(:flights)
+          .permit(:flight_number, :departure_date, :departure_time, :departure, :arrival_date, :arrival_time, :arrival, :arrival_zipcode, :gate, :terminal)
+  end
+
+
+  # private :user_creds, :pw_creds, :flight_info
 end
