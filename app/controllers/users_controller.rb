@@ -66,6 +66,15 @@ class UsersController < ProtectedController
     end
   end
 
+  def updateflight
+    flight = current_user.flights.find(flight_info[:flight_number])
+    if flight.update(flight_info)
+      head :no_content
+    else
+      render json: @flight.errors, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def user_creds
