@@ -42,8 +42,7 @@ class FlightsController < ProtectedController
   # PATCH/PUT /flights/1
   # PATCH/PUT /flights/1.json
 def update
-  users_flight = @flight.trips.find_by(user_id: current_user.id)
-  if users_flight == @flight && @flight.update(flight_params)
+  if @flight.trips.find_by(user_id: current_user.id) && @flight.update(flight_params)
     head :no_content
   else
     render json: @flight.errors, status: :unprocessable_entity
