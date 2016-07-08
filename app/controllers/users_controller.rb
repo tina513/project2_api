@@ -57,23 +57,23 @@ class UsersController < ProtectedController
     head :bad_request
   end
 
-  def creatflight
-    flight = current_user.flights.create(flight_info)
-    if flight.valid?
-      render json: flight, status: :created
-    else
-      head :bad_request
-    end
-  end
+  # def creatflight
+  #   flight = current_user.flights.create(flight_info)
+  #   if flight.valid?
+  #     render json: flight, status: :created
+  #   else
+  #     head :bad_request
+  #   end
+  # end
 
-  def updateflight
-    flight = current_user.flights.find(flight_info[:flight_number])
-    if flight.update(flight_info)
-      head :no_content
-    else
-      render json: @flight.errors, status: :unprocessable_entity
-    end
-  end
+  # def updateflight
+  #   flight = current_user.flights.find(flight_info[:flight_number])
+  #   if flight.update(flight_info)
+  #     head :no_content
+  #   else
+  #     render json: @flight.errors, status: :unprocessable_entity
+  #   end
+  # end
 
   private
 

@@ -1,4 +1,4 @@
-class TripsController < ApplicationController
+class TripsController < ProtectedController
   before_action :set_trip, only: [:show, :update, :destroy]
 
   # GET /trips
@@ -20,6 +20,8 @@ class TripsController < ApplicationController
   def create
     @trip = Trip.new(trip_params)
 
+    @trip.user_id = current_user.id
+
     if @trip.save
       render json: @trip, status: :created, location: @trip
     else
@@ -32,19 +34,23 @@ class TripsController < ApplicationController
   def update
     @trip = Trip.find(params[:id])
 
-    if @trip.update(trip_params)
-      head :no_content
-    else
-      render json: @trip.errors, status: :unprocessable_entity
+    if (@trip.user_id == current_user.id)
+
+      if @trip.update(trip_params)
+        head :no_content
+      else
+        render json: @trip.errors, status: :unprocessable_entity
+      end
     end
   end
 
   # DELETE /trips/1
   # DELETE /trips/1.json
   def destroy
-    @trip.destroy
-
-    head :no_content
+    if (@trip.user_id == current_user.id)
+      @trip.destroy
+      head :no_content
+    end
   end
 
   private
@@ -54,6 +60,6 @@ class TripsController < ApplicationController
     end
 
     def trip_params
-      params.require(:trip).permit(:user_id, :flight_id)
+      params.require(:trip).permit(:flight_id)
     end
 end

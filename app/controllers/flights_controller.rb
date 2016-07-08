@@ -1,4 +1,4 @@
-class FlightsController < ApplicationController
+class FlightsController < ProtectedController
   before_action :set_flight, only: [:show, :update, :destroy]
 
   # GET /flights
@@ -17,8 +17,20 @@ class FlightsController < ApplicationController
 
   # POST /flights
   # POST /flights.json
+
+  # def creatflight
+  #   flight = current_user.flights.create(flight_info)
+  #   if flight.valid?
+  #     render json: flight, status: :created
+  #   else
+  #     head :bad_request
+  #   end
+  # end
+
   def create
     @flight = Flight.new(flight_params)
+
+    current_user.flights << @flight
 
     if @flight.save
       render json: @flight, status: :created, location: @flight
@@ -29,15 +41,14 @@ class FlightsController < ApplicationController
 
   # PATCH/PUT /flights/1
   # PATCH/PUT /flights/1.json
-  def update
-    @flight = Flight.find(params[:id])
-
-    if @flight.update(flight_params)
-      head :no_content
-    else
-      render json: @flight.errors, status: :unprocessable_entity
-    end
+def update
+  users_flight = @flight.trips.find_by(user_id: current_user.id)
+  if users_flight == @flight && @flight.update(flight_params)
+    head :no_content
+  else
+    render json: @flight.errors, status: :unprocessable_entity
   end
+end
 
   # DELETE /flights/1
   # DELETE /flights/1.json
